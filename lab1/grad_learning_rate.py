@@ -12,6 +12,9 @@ log_iter = False
 it = 0
 
 log_plot = False
+log_history = False
+plot_scale = 1
+history = []
 counter = 0
 name = ''
 
@@ -26,21 +29,31 @@ stop_criteria_func = (lambda dot_1, dot_2: calc_stop_func(dot_1, dot_2) < eps)
 
 
 def gradient_descent(f, *start_dot):
-    global it
+    global it, history
 
     if log_iter:
         it = 1
 
     next_dot = next_dot_func(f)
-
     last_dot = np.array(start_dot)
+
+    if log_history:
+        history.append(last_dot)
+
     dot = next_dot(last_dot)
+
+    if log_history:
+        history.append(dot)
 
     for _ in range(max_iter):
         if log_iter:
             it += 1
 
         last_dot, dot = dot, next_dot(dot)
+
+        if log_history:
+            history.append(dot)
+
         if stop_criteria_func(last_dot, dot):
             break
 
@@ -48,29 +61,46 @@ def gradient_descent(f, *start_dot):
 
 
 def run(f, *start_dot):
+    global counter, name, history
+    history = []
     res = gradient_descent(f, *start_dot)
 
-    if log_plot:
-        global counter, name
-        fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
-        ax.zaxis.set_major_locator(LinearLocator(10))
-        ax.zaxis.set_major_formatter('{x:.02f}')
-
+    if log_history or log_plot:
         xl = res[0] - math.fabs(res[0] - start_dot[0])
         xr = res[0] + math.fabs(res[0] - start_dot[0])
         yl = res[1] - math.fabs(res[1] - start_dot[1])
         yr = res[1] + math.fabs(res[1] - start_dot[1])
 
-        X = np.arange(xl, xr,  (xr - xl) / 100.0)
-        Y = np.arange(yl,   yr, (yr - yl) / 100.0)
+        xl = (xr + xl) / 2 - plot_scale * math.fabs(xr - xl) / 2
+        xr = (xr + xl) / 2 + plot_scale * math.fabs(xr - xl) / 2
+        yl = (yr + yl) / 2 - plot_scale * math.fabs(yr - yl) / 2
+        yr = (yr + yl) / 2 + plot_scale * math.fabs(yr - yl) / 2
+
+        X = np.arange(xl, xr, (xr - xl) / 100.0)
+        Y = np.arange(yl, yr, (yr - yl) / 100.0)
         X, Y = np.meshgrid(X, Y)
         Z = f(X, Y)
+
+    if log_plot:
+        fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+        ax.zaxis.set_major_locator(LinearLocator(10))
+        ax.zaxis.set_major_formatter('{x:.02f}')
 
         ax.plot_surface(X, Y, Z, alpha=0.4, color='b')
         plt.savefig(f'figs/grad_learning_rate_{name}_{counter}.png', dpi=400)
         plt.close('all')
-        name = ''
         counter += 1
+
+    if log_history:
+        plt.contour(X, Y, Z, levels=15)
+        plt.scatter([i[0] for i in history], [i[1] for i in history])
+
+        plt.grid(True)
+        plt.savefig(f'figs/grad_learning_rate_levels_{name}_{counter}.png')
+        counter += 1
+        plt.close('all')
+    name = ''
+
     return res
 
 
