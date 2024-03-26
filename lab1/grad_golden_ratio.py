@@ -8,8 +8,8 @@ GOLDEN_CONST = (math.sqrt(5) - 2) / 2.0
 eps = 0.000001
 max_iter = 1000
 
-left = -1.0 / 100
-right = 7.0 / 100
+left = 0.1
+right = 7.0
 
 
 def st(f, epsilon, *dot):

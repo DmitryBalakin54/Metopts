@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 eps = 0.000001
 max_iter = 1000
 
-left = -1.0 / 100
-right = 7.0 / 100
+left = 0.0001
+right = 0.07
 
 
 def st(f, epsilon, *dot):

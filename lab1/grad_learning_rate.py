@@ -3,7 +3,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-step = 0.01
+step = 0.1
 eps = 0.000001
 max_iter = 10000
 

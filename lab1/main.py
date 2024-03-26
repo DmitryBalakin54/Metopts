@@ -19,7 +19,7 @@ gold.right = 7.0 / 1
 
 
 def run_grad(gr, x, y):
-    print('-' * 3 + f'{gr.__name__}' + '-' * 3)
+    print('-' * 3 + f'{gr.__name__} x = {x} y = {y}' + '-' * 3)
     res_1 = gr.run(lambda x, y: x ** 2 + y ** 2, x, y)
     res_1 = [format(i, ".10f") for i in res_1]
     print(res_1)
