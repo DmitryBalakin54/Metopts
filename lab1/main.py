@@ -9,8 +9,8 @@ grad.max_iter = 10000
 
 dech.eps = 0.000001
 dech.max_iter = 1000
-dech.left = 0.001 / 10
-dech.right = 7.0 / 10
+dech.left = 0.01 / 100
+dech.right = 7.0 / 100
 
 gold.eps = 0.000001
 gold.max_iter = 1000
