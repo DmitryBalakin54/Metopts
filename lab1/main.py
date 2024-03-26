@@ -1,7 +1,8 @@
+import math
+
 import grad_learning_rate as grad
 import grad_dichotomy as dech
 import grad_golden_ratio as gold
-
 
 grad.step = 0.09
 grad.eps = 0.00000001
@@ -15,24 +16,30 @@ dech.right = 7.0 / 100
 gold.eps = 0.000001
 gold.max_iter = 1000
 gold.left = 1.0 / 10
-gold.right = 7.0 / 1
+gold.right = 7.0 / 10
 
 
-def run_grad(gr, x, y):
-    print('-' * 3 + f'{gr.__name__} x = {x} y = {y}' + '-' * 3)
-    res_1 = gr.run(lambda x, y: x ** 2 + y ** 2, x, y)
-    res_1 = [format(i, ".10f") for i in res_1]
-    print(res_1)
+def run_f(gr, f, arg0, arg1):
+    res = gr.run(f, arg0, arg1)
+    res = [format(i, ".10f") for i in res]
+    print(res)
 
-    res_2 = gr.run(lambda x, y: x ** 2 - 2 * x + y ** 2 + 1, x, y)
-    res_2 = [format(i, ".10f") for i in res_2]
-    print(res_2)
 
-    res_3 = gr.run(lambda x, y: x ** 2 - 2 * x * y + y ** 2 + 1, x, y)
-    res_3 = [format(i, ".10f") for i in res_3]
-    print(res_3)
+def run_grad(gr, arg0, arg1):
+    print('-' * 3 + f'{gr.__name__} x = {arg0} y = {arg1}' + '-' * 3)
+
+    run_f(gr, lambda x, y: x ** 2 + y ** 2, arg0, arg1)
+    run_f(gr, lambda x, y: x ** 2 - 2 * x + y ** 2 + 1, arg0, arg1)
+    run_f(gr, lambda x, y: x ** 2 - 2 * x * y + y ** 2 + 1, arg0, arg1)
+    run_f(gr, lambda x, y: math.sin(x) ** 2 + math.cos(y) ** 2, arg0, arg1)
 
 
 run_grad(grad, -100, 50)
 run_grad(dech, -100, 50)
 run_grad(gold, -100, 50)
+
+print(end="\n\n\n")
+
+run_grad(grad, 4, -3)
+run_grad(dech, 4, -3)
+run_grad(gold, 4, -3)
