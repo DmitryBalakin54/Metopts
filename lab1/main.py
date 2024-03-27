@@ -4,16 +4,16 @@ import grad_learning_rate as grad
 import grad_dichotomy as dech
 import grad_golden_ratio as gold
 
-grad.step = 0.09
-grad.eps = 0.000001
+grad.step = 0.3
+grad.eps = 0.0000001
 grad.max_iter = 10000
 
-dech.eps = 0.000001
+dech.eps = 0.0000001
 dech.max_iter = 10000
 dech.left = 0.01
 dech.right = 0.4
 
-gold.eps = 0.000001
+gold.eps = 0.0000001
 gold.max_iter = 10000
 gold.left = 0.01
 gold.right = 0.4
