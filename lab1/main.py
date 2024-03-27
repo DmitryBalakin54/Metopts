@@ -31,8 +31,9 @@ def run_f(gr, f, arg0, arg1, name, log, log_plt, log_history, plt_scale):
     gr.name = name
 
     res = gr.run(f, arg0, arg1)
+    res1 = [format(i, ".10f") for i in res]
     res = [round(i, 5) for i in res]
-    print(f'f = {name}, X = {res}, res = {round(f(*res), 5)}', end='')
+    print(f'f = {name}, X = {res1}, res = {round(f(*res), 5)}', end='')
     if log:
         print(f', iters = {gr.it}', end='')
     print()
@@ -44,7 +45,7 @@ def run_grad(gr, arg0, arg1, log=False, log_plt=False, log_history=False, plt_sc
     run_f(gr, lambda x, y: x ** 2 + y ** 2, arg0, arg1, 'x^2 + y^2', log, log_plt, log_history, plt_scale)
     run_f(gr, lambda x, y: x ** 2 - 2 * x + y ** 2 + 1, arg0, arg1,'x^2 - 2x + y^2 + 1', log, log_plt, log_history, plt_scale)
     run_f(gr, lambda x, y: x ** 2 - 2 * x * y + y ** 2 + 1, arg0, arg1, 'x^2 - 2xy + y^2 + 1', log, log_plt, log_history, plt_scale)
-    run_f(gr, lambda x, y: np.sin(x) ** 2 + np.cos(y) ** 2, arg0, arg1, 'sin(x)^2 + cos(x)^2', log, log_plt, log_history, plt_scale * 2.5)
+    run_f(gr, lambda x, y: np.sin(x) ** 2 + np.cos(y) ** 2, arg0, arg1, 'sin(x)^2 + cos(x)^2', log, log_plt, log_history, plt_scale)
 
 
 run_grad(grad, -100, 50, True)
