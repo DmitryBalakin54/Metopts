@@ -7,8 +7,8 @@ from matplotlib.ticker import LinearLocator
 eps = 0.000001
 max_iter = 1000
 
-left = 0.0001
-right = 0.07
+left = 0.001
+right = 0.4
 
 log_iter = False
 it = 0
@@ -22,31 +22,32 @@ name = ''
 
 
 def st(f, epsilon, *dot):
-    res = []
+    delta = epsilon / 2
+    res = 1
     grd = grad_func(f)(*dot)
-    for ind, line in enumerate(np.eye(len(dot))):
-        sign = grd[ind] / math.fabs(grd[ind]) if grd[ind] != 0 else 1
-        l = left
-        r = right
+    l = left
+    r = right
 
-        for _ in range(max_iter):
-            m = (l + r) / 2
+    for _ in range(max_iter):
+        x2 = l + (0.5 + delta) * (r - l)
+        x1 = l + (0.5 - delta) * (r - l)
 
-            f_l = f(*(dot + l * line * sign))
-            f_r = f(*(dot + r * line * sign))
-            f_m = f(*(dot + m * line * sign))
+        f_x1 = f(*(dot - x1 * grd))
+        f_x2 = f(*(dot - x2 * grd))
 
-            if f_m < f_l:
-                r = m
-            elif f_m < f_r:
-                l = m
-            else:
-                break
+        if f_x1 < f_x2:
+            r = x2
+        elif f_x2 < f_x1:
+            l = x1
+        else:
+            res = math.fabs(x1 + x2) / 2
+            break
 
-            if math.fabs(r - l) < epsilon:
-                break
-        res.append((l + r) / 2)
-    return np.array(res)
+        res = math.fabs(r + l) / 2
+        if math.fabs(r - l) < epsilon:
+            break
+
+    return res
 
 
 grad_func = (lambda f: lambda *args: np.array(
@@ -137,5 +138,8 @@ def run(f, *start_dot):
 
 
 if __name__ == '__main__':
-    print(run(lambda x, y: x ** 2 + y ** 2, -1, -1))
+    log_history = True
+
+    print(run(lambda x, y: x ** 2 + y ** 2, -1, 1))
     print(run(lambda x, y: x ** 2 - 2 * x + y ** 2 + 1, -2, -1))
+    print(run(lambda x, y: x ** 2 - 2 * x * y + y ** 2 + 1, -4, 2))
