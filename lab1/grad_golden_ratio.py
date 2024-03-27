@@ -33,8 +33,8 @@ def st(f, epsilon, *dot):
         for _ in range(max_iter):
             sign = grd[ind] / math.fabs(grd[ind]) if grd[ind] != 0 else 1
 
-            x1 = l + (1 - GOLDEN_CONST) * (r - l)
-            x2 = l + GOLDEN_CONST * (r - l)
+            x2 = l + (1 - GOLDEN_CONST) * (r - l)
+            x1 = l + GOLDEN_CONST * (r - l)
 
             f_x1 = f(*(dot + x1 * line * sign))
             f_x2 = f(*(dot + x2 * line * sign))

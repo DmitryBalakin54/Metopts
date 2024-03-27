@@ -57,7 +57,7 @@ calc_stop_func = (lambda dot_1, dot_2: math.sqrt(sum((dot_1[i] - dot_2[i]) ** 2 
 
 stop_criteria_func = (lambda dot_1, dot_2: calc_stop_func(dot_1, dot_2) < eps)
 
-step_func = (lambda f: lambda *dot: st(f, eps / 10, *dot))
+step_func = (lambda f: lambda *dot: st(f, eps, *dot))
 
 
 def gradient_descent(f, *start_dot):

@@ -1,4 +1,3 @@
-import math
 import numpy as np
 
 import grad_learning_rate as grad
@@ -6,18 +5,18 @@ import grad_dichotomy as dech
 import grad_golden_ratio as gold
 
 grad.step = 0.09
-grad.eps = 0.00000001
+grad.eps = 0.000001
 grad.max_iter = 10000
 
-dech.eps = 0.00000001
-dech.max_iter = 1000
-dech.left = 0.01 / 100
-dech.right = 7.0 / 100
+dech.eps = 0.000001
+dech.max_iter = 10000
+dech.left = 0.01
+dech.right = 0.4
 
-gold.eps = 0.00000001
-gold.max_iter = 1000
-gold.left = 1.0 / 10
-gold.right = 7.0 / 10
+gold.eps = 0.000001
+gold.max_iter = 10000
+gold.left = 0.01
+gold.right = 0.4
 
 
 def run_f(gr, f, arg0, arg1, name, log, log_plt, log_history, plt_scale):
@@ -45,12 +44,12 @@ def run_grad(gr, arg0, arg1, log=False, log_plt=False, log_history=False, plt_sc
     run_f(gr, lambda x, y: np.sin(x) ** 2 + np.cos(y) ** 2, arg0, arg1, 'sin(x)^2 + cos(x)^2', log, log_plt, log_history, plt_scale * 2.5)
 
 
-run_grad(grad, -100, 50, True, True, True)
-run_grad(dech, -100, 50, True, log_history=True)
-run_grad(gold, -100, 50, True, log_history=True)
+run_grad(grad, -100, 50, True)
+run_grad(dech, -100, 50, True)
+run_grad(gold, -100, 50, True)
 
 print(end="\n\n\n")
 
-run_grad(grad, 4, -3, True, True, True)
-run_grad(dech, 4, -3, True, log_history=True)
-run_grad(gold, 4, -3, True, log_history=True)
+run_grad(grad, 4, -3, True)
+run_grad(dech, 4, -3, True)
+run_grad(gold, 4, -3, True)
