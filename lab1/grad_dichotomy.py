@@ -19,7 +19,7 @@ plot_scale = 1
 history = []
 counter = 0
 name = ''
-
+levels = 10
 
 def st(f, epsilon, *dot):
     delta = epsilon / 2
@@ -93,22 +93,47 @@ def gradient_descent(f, *start_dot):
 
     return dot
 
+def get_abs_dot(d1, d2, offset):
+    dot = np.array([0.0 for _ in d1])
+    for i in range(len(d1)):
+        dot[i] = d1[i] \
+            if math.fabs(d1[i] - offset[i]) > math.fabs(d2[i] - offset[i]) \
+            else d2[i]
+
+    return dot
+
+
+def get_max_dot(center, start):
+    res = start
+    if not log_history:
+        return np.array(res)
+
+    res = get_abs_dot(res, res, center)
+    for dot in history:
+        res = get_abs_dot(res, dot, center)
+
+    return res
+
 
 def run(f, *start_dot):
-    global counter, name, history
+    global counter, name, history, it
     history = []
     res = gradient_descent(f, *start_dot)
 
+    dot = np.array(start_dot)
+    dot = get_max_dot(res, dot)
     if log_history or log_plot:
-        xl = res[0] - math.fabs(res[0] - start_dot[0])
-        xr = res[0] + math.fabs(res[0] - start_dot[0])
-        yl = res[1] - math.fabs(res[1] - start_dot[1])
-        yr = res[1] + math.fabs(res[1] - start_dot[1])
+        xl = res[0] - math.fabs(res[0] - dot[0])
+        xr = res[0] + math.fabs(res[0] - dot[0])
+        yl = res[1] - math.fabs(res[1] - dot[1])
+        yr = res[1] + math.fabs(res[1] - dot[1])
 
-        xl = (xr + xl) / 2 - plot_scale * math.fabs(xr - xl) / 2
-        xr = (xr + xl) / 2 + plot_scale * math.fabs(xr - xl) / 2
-        yl = (yr + yl) / 2 - plot_scale * math.fabs(yr - yl) / 2
-        yr = (yr + yl) / 2 + plot_scale * math.fabs(yr - yl) / 2
+        offset = math.fabs(xr - xl) / 10
+
+        xl = (xr + xl) / 2 - plot_scale * math.fabs(xr - xl) / 2 - offset
+        xr = (xr + xl) / 2 + plot_scale * math.fabs(xr - xl) / 2 + offset
+        yl = (yr + yl) / 2 - plot_scale * math.fabs(yr - yl) / 2 - offset
+        yr = (yr + yl) / 2 + plot_scale * math.fabs(yr - yl) / 2 + offset
 
         X = np.arange(xl, xr, (xr - xl) / 100.0)
         Y = np.arange(yl, yr, (yr - yl) / 100.0)
@@ -126,7 +151,7 @@ def run(f, *start_dot):
         counter += 1
 
     if log_history:
-        plt.contour(X, Y, Z, levels=15)
+        plt.contour(X, Y, Z, levels=levels)
         plt.scatter([i[0] for i in history], [i[1] for i in history])
         plt.grid(True)
         plt.savefig(f'figs/grad_dichotomy_levels_{name}_{counter}.png')

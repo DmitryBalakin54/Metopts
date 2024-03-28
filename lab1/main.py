@@ -8,19 +8,22 @@ import Nelder_Mead as nM
 grad.step = 0.4
 grad.eps = 0.00001
 grad.max_iter = 10000
+grad.levels = 10
 
 dech.eps = 0.00001
 dech.max_iter = 10000
 dech.left = 0.0001
 dech.right = 1.0
+dech.levels = 10
 
 gold.eps = 0.00001
 gold.max_iter = 10000
 gold.left = 0.0001
 gold.right = 1.0
+gold.levels = 10
 
 nM.eps = 0.00001
-
+nM.levels = 10
 
 def run_f(gr, f, arg0, arg1, name, log, log_plt, log_history, plt_scale):
 

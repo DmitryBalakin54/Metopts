@@ -14,6 +14,7 @@ plot_scale = 1
 history = []
 counter = 0
 name = ''
+levels = 10
 
 def ob(f, X):
     if log_history:
@@ -44,10 +45,9 @@ def get_max_dot(center, start):
 
 
 def run(f, *start_dot):
-    global counter, history, it
-
+    global counter, history, it, name
+    history = []
     dot = np.array(start_dot)
-    print(start_dot)
     res = opt.minimize(lambda X: ob(f, X), dot, method='Nelder-Mead', options={'maxiter': max_iter}, tol=0.000001)
     it = res['nit']
     # opt.s
@@ -83,13 +83,13 @@ def run(f, *start_dot):
         counter += 1
 
     if log_history:
-        plt.contour(X, Y, Z, levels=15)
+        plt.contour(X, Y, Z, levels=levels)
         plt.scatter([i[0] for i in history], [i[1] for i in history])
         plt.grid(True)
         plt.savefig(f'figs/Nelder_Mead_levels_{name}_{counter}.png')
         counter += 1
         plt.close('all')
-    history = []
+    name = ''
 
     return res['x']
 
