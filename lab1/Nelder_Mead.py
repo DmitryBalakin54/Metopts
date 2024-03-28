@@ -47,6 +47,7 @@ def run(f, *start_dot):
     global counter, history, it
 
     dot = np.array(start_dot)
+    print(start_dot)
     res = opt.minimize(lambda X: ob(f, X), dot, method='Nelder-Mead', options={'maxiter': max_iter}, tol=0.000001)
     it = res['nit']
     # opt.s
@@ -88,6 +89,7 @@ def run(f, *start_dot):
         plt.savefig(f'figs/Nelder_Mead_levels_{name}_{counter}.png')
         counter += 1
         plt.close('all')
+    history = []
 
     return res['x']
 
