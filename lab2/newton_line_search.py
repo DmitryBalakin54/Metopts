@@ -21,6 +21,9 @@ levels = 10
 name = ''
 counter = 0
 
+left = 0.01
+right = 100
+
 
 def set_default():
     global eps, max_iter, log_iter, it, log_history, log_plot, levels, history
@@ -32,6 +35,39 @@ def set_default():
     log_history = False
     levels = 10
     history = []
+
+
+def line_search(f, epsilon, x0, grd, inv_hessian, dim):
+    global left, right
+    delta = epsilon / 2
+    res = 1
+    l = left
+    r = right
+
+    for _ in range(max_iter):
+        x2 = l + (0.5 + delta) * (r - l)
+        x1 = l + (0.5 - delta) * (r - l)
+
+        if dim == 2:
+            f_x1 = f(x0 - x1 * grd * inv_hessian)
+            f_x2 = f(x0 - x2 * grd * inv_hessian)
+        else:
+            f_x1 = f(x0 - x1 * np.dot(inv_hessian, grd))
+            f_x2 = f(x0 - x2 * np.dot(inv_hessian, grd))
+
+        if f_x1 < f_x2:
+            r = x2
+        elif f_x2 < f_x1:
+            l = x1
+        else:
+            res = math.fabs(x1 + x2) / 2
+            break
+
+        res = math.fabs(r + l) / 2
+        if math.fabs(r - l) < epsilon:
+            break
+
+    return res
 
 
 def newton_method(f, x0):
@@ -46,11 +82,12 @@ def newton_method(f, x0):
 
         grad = approx_fprime(cur_x, f, epsilon=1e-6)
         hessian = approx_fprime(cur_x, lambda x: approx_fprime(x, f, epsilon=1e-6), epsilon=1e-6)
-
+        inv_hessian = np.linalg.linalg.inv(hessian) if len(x0) + 1 != 2 else 1 / hessian
+        alpha = line_search(f, 1e-3, cur_x, grad, inv_hessian, len(x0) + 1)
         if len(grad) > 1:
-            new_x = cur_x - np.dot(np.linalg.linalg.inv(hessian), grad)
+            new_x = cur_x - alpha * np.dot(inv_hessian, grad)
         else:
-            new_x = cur_x - grad / hessian
+            new_x = cur_x - alpha * grad * inv_hessian
 
         if np.linalg.norm(new_x - cur_x) < eps:
             if log_plot or log_history:
@@ -139,7 +176,7 @@ def draw_2D(start, finish, f):
     plt.xlabel('x')
     plt.ylabel('y')
     new_name = make_new_name()
-    plt.savefig(f'figs/newton_{new_name}_{counter}.png', dpi=400)
+    plt.savefig(f'figs/newton_line_search_{new_name}_{counter}.png', dpi=400)
     plt.close('all')
     counter += 1
 
@@ -153,7 +190,7 @@ def draw_3D(start, finish, f):
 
     ax.plot_surface(X, Y, Z, alpha=0.4, color='b')
     new_name = make_new_name()
-    plt.savefig(f'figs/newton_{new_name}_{counter}.png', dpi=400)
+    plt.savefig(f'figs/newton_line_search_{new_name}_{counter}.png', dpi=400)
     plt.close('all')
     counter += 1
 
@@ -172,7 +209,7 @@ def draw_way_2D(start, finish, f):
     plt.xlabel('x')
     plt.ylabel('y')
     new_name = make_new_name()
-    plt.savefig(f'figs/newton_levels_{new_name}_{counter}.png', dpi=400)
+    plt.savefig(f'figs/newton_line_search_levels_{new_name}_{counter}.png', dpi=400)
     plt.close('all')
     counter += 1
 
@@ -185,7 +222,7 @@ def draw_way_3D(start, finish, f):
 
     plt.grid(True)
     new_name = make_new_name()
-    plt.savefig(f'figs/newton_levels_{new_name}_{counter}.png')
+    plt.savefig(f'figs/newton_line_search_levels_{new_name}_{counter}.png')
     counter += 1
     plt.close('all')
 
