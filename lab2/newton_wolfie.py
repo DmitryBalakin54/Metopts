@@ -5,7 +5,7 @@ from newton import Newton
 
 class NewtonWolfie(Newton):
     def __init__(self, eps=1e-6, max_iter=100, log_iter=False, log_plot=False, log_history=False, levels=10,
-                 c1=1e-5, c2=0.99, alpha_init=1.0, max_wolfie_iter=100):
+                 c1=1e-5, c2=0.99, alpha_init=1.5, max_wolfie_iter=100):
         super().__init__(eps, max_iter, log_iter, log_plot, log_history, levels)
         self.c1 = c1
         self.c2 = c2
@@ -14,7 +14,7 @@ class NewtonWolfie(Newton):
 
     def step(self, f, epsilon, x0, grd_dot_inv_hess):
         alpha = self.alpha_init
-        f_prime = (lambda x: approx_fprime(x, f))
+        f_prime = (lambda x: approx_fprime(x, f, epsilon=epsilon))
         for _ in range(self.max_wolfie_iter):
             if (f(x0 - alpha * grd_dot_inv_hess) > f(x0) - self.c1 * alpha *
                     (np.dot(f_prime(x0), grd_dot_inv_hess) if len(x0) > 1 else f_prime(x0) * grd_dot_inv_hess)):
@@ -26,5 +26,4 @@ class NewtonWolfie(Newton):
                 else:
                     return alpha
 
-        # TODO если не получилось найти, то топаем обычным шагом
-        return 1
+        return alpha

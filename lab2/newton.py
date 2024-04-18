@@ -47,7 +47,7 @@ class Newton:
             else:
                 grd_dot_inv_hess = grad / hessian
 
-            new_x = cur_x - self.step(f, 1e-3, cur_x, grd_dot_inv_hess) * grd_dot_inv_hess
+            new_x = cur_x - self.step(f, self.eps, cur_x, grd_dot_inv_hess) * grd_dot_inv_hess
 
             if np.linalg.norm(new_x - cur_x) < self.eps:
                 if self.log_plot or self.log_history:
@@ -151,7 +151,7 @@ class Newton:
         plt.plot(X, Y, color='b')
         plt.scatter(self.history, [f(i) for i in self.history])
         plt.title(name)
-        f_prime = (lambda x: approx_fprime(x, f))
+        f_prime = (lambda x: approx_fprime(x, f, epsilon=self.eps))
         X, Y = self.get_X_Y(start, finish, f_prime)
         plt.plot(X, Y, color='r')
         plt.scatter(self.history, [f_prime(i) for i in self.history])
