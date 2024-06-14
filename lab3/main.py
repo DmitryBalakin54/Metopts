@@ -117,14 +117,14 @@ l1 = 0.00
 l2 = 0.00
 degree = 3
 
-# Генерация данных
-# X, y = generate_linear_data_with_noise(samples, 1, 0.1)  # Данные с 1 признаком и шумом
-# X, y = generate_linear_data(samples, 1)  # Данные с 1 признаком (без шума)
-X, y = generate_polynomial_data(samples, degree, 0.0)  # Полиномиальные данные
-# X, y = generate_exponential_data(samples)  # Экспоненциальные данные
-# X, y = generate_linear_data_with_uniform_noise(samples, 1, 0.8)  # Линейные данные с равномерным шумом
 
-# Добавление полиномиальных признаков
+# X, y = generate_linear_data_with_noise(samples, 1, 0.1)
+# X, y = generate_linear_data(samples, 1)
+X, y = generate_polynomial_data(samples, degree, 0.0)
+# X, y = generate_exponential_data(samples)
+# X, y = generate_linear_data_with_uniform_noise(samples, 1, 0.8)
+
+
 X_poly = add_polynomial_features(X, degree)
 res = []
 for batch_size in batch_sizes[:3]:
