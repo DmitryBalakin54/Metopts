@@ -109,10 +109,10 @@ decay_rate = 0.01
 drop = 0.8
 epochs_drop = 300
 step = 0.5
-epochs = 1000
-samples = 100
+epochs = 100
+samples = 10
 momentum = 0.1
-regularization = 3
+regularization = 0
 l1 = 0.00
 l2 = 0.00
 degree = 3
@@ -120,14 +120,14 @@ degree = 3
 
 # X, y = generate_linear_data_with_noise(samples, 1, 0.1)
 # X, y = generate_linear_data(samples, 1)
-X, y = generate_polynomial_data(samples, degree, 0.0)
+X, y = generate_polynomial_data(samples, degree, 1)
 # X, y = generate_exponential_data(samples)
 # X, y = generate_linear_data_with_uniform_noise(samples, 1, 0.8)
 
 
 X_poly = add_polynomial_features(X, degree)
 res = []
-for batch_size in batch_sizes[:3]:
+for batch_size in batch_sizes[:2]:
     print(f"\nBatch Size: {batch_size}")
 
     theta_ladder, history_ladder = sgd(X_poly, y, batch_size, step_decay(initial_lr / (degree * 2), drop, epochs_drop), "Drop step",
@@ -140,11 +140,14 @@ for batch_size in batch_sizes[:3]:
 
     plt.figure(figsize=(14, 7))
 
+    # Generate dense set of points for smooth plotting
+    X_dense = np.linspace(X.min(), X.max(), 100).reshape(-1, 1)
+    X_dense_poly = add_polynomial_features(X_dense, degree)
+
     plt.subplot(1, 2, 1)
     plt.scatter(X, y, color='blue', marker='o', label='Data points')
-    y_pred_ladder = predict(X_poly, theta_ladder)
-    plt.plot(np.sort(X, axis=0), y_pred_ladder[np.argsort(X, axis=0).ravel()], color='red', linewidth=2,
-             label='Model prediction (Ladder)')
+    y_pred_ladder = predict(X_dense_poly, theta_ladder)
+    plt.plot(X_dense, y_pred_ladder, color='red', linewidth=2, label='Model prediction (Ladder)')
     plt.title(f'Batch Size {batch_size} - Ladder')
     plt.xlabel('Feature')
     plt.ylabel('Target')
@@ -152,9 +155,8 @@ for batch_size in batch_sizes[:3]:
 
     plt.subplot(1, 2, 2)
     plt.scatter(X, y, color='blue', marker='o', label='Data points')
-    y_pred_step = predict(X_poly, theta_step)
-    plt.plot(np.sort(X, axis=0), y_pred_step[np.argsort(X, axis=0).ravel()], color='green', linewidth=2,
-             label='Model prediction (Const step)')
+    y_pred_step = predict(X_dense_poly, theta_step)
+    plt.plot(X_dense, y_pred_step, color='green', linewidth=2, label='Model prediction (Const step)')
     plt.title(f'Batch Size {batch_size} - Const step')
     plt.xlabel('Feature')
     plt.ylabel('Target')
